@@ -1,0 +1,8 @@
+.chakra-toast__inner {
+    margin: 0.2rem;
+}
+
+.chakra-toast__inner .chakra-alert {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
