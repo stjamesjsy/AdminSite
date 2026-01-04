@@ -249,10 +249,6 @@ export default function ScreenInfo(props: Props) {
                         text="Videos"
                         marginRight="8"
                     />
-                     <Tab
-                        text="Full Logs"
-                        marginRight="8"
-                    />
                 </TabList>
                 <TabPanels>
                     <TabPanel paddingX="0">
@@ -262,6 +258,7 @@ export default function ScreenInfo(props: Props) {
                             sendAction={sendAction}
                             deviceUptime={deviceUptime}
                             connected={connected}
+                            fetchScreen={() => fetchScreen(screen.id)}
                         />
                     </TabPanel>
                     <TabPanel paddingX="0">

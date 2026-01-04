@@ -25,6 +25,7 @@ export default function Sidebar({ session }: any) {
     return (
         <Box
             width={(collapsed && !isMobile) ? "80px" : "260px"}
+            maxWidth={(collapsed && !isMobile) ? "80px" : "260px"}
             paddingX="4"
             paddingY="6"
             bgColor="gray.200"
@@ -40,6 +41,7 @@ export default function Sidebar({ session }: any) {
                 right: "0%",
                 bottom: "auto",
                 width: "100%",
+                maxWidth: "100%",
                 height: "auto",
                 paddingTop: "5px",
                 paddingBottom: "5px",
@@ -49,7 +51,7 @@ export default function Sidebar({ session }: any) {
         >
             <Flex justifyContent="space-between" alignItems="center">
                 <Flex alignItems="center" gap={2}>
-                    {isMobile ? (
+                    {(isMobile) ? (
                         <>
                             <Image
                                 src="/images/logo.png"
@@ -82,7 +84,7 @@ export default function Sidebar({ session }: any) {
                     )}
                 </Flex>
 
-                {isMobile && (
+                {(isMobile) && (
                     <Box
                         position="relative"
                         padding="18px"

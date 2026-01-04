@@ -45,7 +45,7 @@ export default function Index({ apiKey, session }: any) {
     }, []);
 
     return (
-        <Page title="Home" session={session}>
+        <Page title="Home">
             <Heading size={{ base: "sm", md: "md" }} marginBottom="10">St James Admin</Heading>
 
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing="4">

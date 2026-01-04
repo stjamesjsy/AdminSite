@@ -1,7 +1,7 @@
 import { AbsoluteCenter, Badge, Box, Button, Flex, Heading, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Card from "../../components/ui/Card";
 import { InputContainer } from "../../components/ui/InputContainer";
 import { Page } from "../../components/ui/Page";
@@ -27,7 +27,7 @@ const Login = () => {
     const logIn = () => signIn("credentials", { username, password, callbackUrl: `${window.location.origin}` });
 
     return (
-        <Page title="Sign In" hideSidebar>
+        <Page title="Sign In">
             <Flex
                 marginTop="10"
                 justifyContent="center"
@@ -96,5 +96,8 @@ const Login = () => {
         </Page>
     )
 }
+
+// Hide the sidebar
+Login.getLayout = (page: ReactElement) => page;
 
 export default Login;

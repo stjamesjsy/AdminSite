@@ -18,9 +18,10 @@ interface InfoProps {
     sendAction: any;
     deviceUptime: string;
     connected?: boolean;
+    fetchScreen: () => void;
 }
 
-export default function InformationTabPanel({ screen, sendAction, session, deviceUptime, connected }: InfoProps) {
+export default function InformationTabPanel({ screen, sendAction, session, deviceUptime, connected, fetchScreen }: InfoProps) {
     const { isOpen: isSetMessageModalOpen, onClose: onSetMessageModalClose, onOpen: onSetMessageModalOpen } = useDisclosure();
 
     const [logs, setLogs] = useState<Log[]>([]);
@@ -63,11 +64,11 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
 
     async function fetchLogs() {
         try {
-            setLogsError("");
             const response = await newApiRequest("GET", `/screens/${screen?.id}/logs`);
 
             if (await handleApiError(response)) {
                 const data = await response.json();
+                setLogsError("");
                 setLogs(data);
             } else {
                 setLogsError("Failed to fetch logs");
@@ -84,7 +85,8 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
             });
 
             if (await handleApiError(response)) {
-                router.reload();
+                fetchScreen();
+                toast({ title: "Refreshed code", status: "success" });
             } else {
                 toast({ title: "Failed to refresh code", status: "error" });
             }
@@ -96,7 +98,7 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
 
     function getLogColor(log: Log) {
         if (log.status === LogStatus.INFO) {
-            return "gray";
+            return "gray.600";
         }
         if (log.status === LogStatus.ERROR) {
             return "red";
@@ -134,7 +136,7 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
                     <Card padding="5">
                         <Flex justifyContent="space-between">
                             <Heading size="xs" marginBottom="2">Connect</Heading>
-                            
+
                             <Tooltip label="Refresh code">
                                 <IconButton
                                     icon={<Refresh />}
@@ -248,7 +250,9 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
                         whiteSpace="nowrap"
                     >
                         {logs.map(log => {
-                            if (!showDebug && log.status === LogStatus.DEBUG) {
+                            const debug = log.status === LogStatus.DEBUG;
+                            
+                            if (!showDebug && debug) {
                                 return;
                             }
                             return (
@@ -258,9 +262,9 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
                                     whiteSpace="nowrap"
                                     minWidth="max-content"
                                 >
-                                    <Text color="gray">{formatDate(log.createdAt)} -&nbsp;</Text>
+                                    <Text color="gray.600">{formatDate(log.createdAt)} -&nbsp;</Text>
                                     <Text color={getLogColor(log)}>[{log.status}]</Text>
-                                    <Text color={getLogColor(log)}>&nbsp;{log.text}</Text>
+                                    <Text color={getLogColor(log)} fontSize={debug ? 12 : "inherit"}>&nbsp;{log.text}</Text>
                                 </Flex>
                             );
                         })}

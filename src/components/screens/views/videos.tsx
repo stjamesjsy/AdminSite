@@ -76,6 +76,7 @@ export function VideoSettings({ screen, videos, findErrorMessage, clearErrorAndR
     async function toggleVideoControls(isChecked: boolean) {
         try {
             const result = await newLocalApiRequest("POST", "/actions/toggle-controls", {
+                screenId: screen.id,
                 showControls: isChecked
             });
 
@@ -97,15 +98,18 @@ export function VideoSettings({ screen, videos, findErrorMessage, clearErrorAndR
             const videoId = video?.id ?? null;
             const videoName = video?.name ?? null;
 
-            setActiveVideoId(videoId);
-            setActiveVideoName(videoName);
-            handleChange();
-
-            const success = await updateSettingsNew({
-                videos: { activeVideoId: videoId }
+            const result = await newLocalApiRequest("POST", "/actions/change-active-video", {
+                screenId: screen.id,
+                activeVideoId: videoId
             });
 
-            if (success) {
+            if (await handleApiError(result)) {
+                toast({ title: "Active video changed", duration: 2000 });
+
+                setActiveVideoId(videoId);
+                setActiveVideoName(videoName);
+                handleChange();
+
                 sendAction(ScreenAction.CHANGE_VIDEO, {
                     videoId,
                     videoName
@@ -124,7 +128,7 @@ export function VideoSettings({ screen, videos, findErrorMessage, clearErrorAndR
         videos: {
             activeVideoId,
             isControlsShown,
-            isTimeShown: !!screen?.isTimeShown,
+            isTimeShown: !!screen?.isTimeShown
         },
     });
 

@@ -1,9 +1,15 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import "@fontsource/lexend/300.css";
-import App from "next/app";
+import App, { AppProps } from "next/app";
+import { ReactElement, ReactNode } from "react";
 import { v4 as uuid } from "uuid";
+import AppLayout from "../components/ui/AppLayout";
 import "../global.css";
 import theme from "../theme";
+
+export type NextPageWithLayout = AppProps["Component"] & {
+    getLayout?: (page: ReactElement) => ReactNode;
+}
 
 class MyApp extends App {
 
@@ -20,16 +26,22 @@ class MyApp extends App {
             }
         }
 
+        const getLayout = (Component as NextPageWithLayout).getLayout ?? ((page) => (
+            <AppLayout session={pageProps.session}>
+                {page}
+            </AppLayout>
+        ));
+
         return (
             <ChakraProvider
                 theme={theme}
                 toastOptions={{
                     defaultOptions: {
                         position: "top-right",
-                    }
+                    },
                 }}
             >
-                <Component {...pageProps} />
+                {getLayout(<Component {...pageProps} />)}
             </ChakraProvider>
         )
     }
