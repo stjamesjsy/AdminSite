@@ -67,3 +67,13 @@ export function formatDate(dateString: string) {
 
     return `${dd}/${mm}/${yy} ${hh}:${min}:${ss}`;
 }
+
+export function generateRandomChars(length: number) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}

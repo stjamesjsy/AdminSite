@@ -249,6 +249,10 @@ export default function ScreenInfo(props: Props) {
                         text="Videos"
                         marginRight="8"
                     />
+                     <Tab
+                        text="Full Logs"
+                        marginRight="8"
+                    />
                 </TabList>
                 <TabPanels>
                     <TabPanel paddingX="0">

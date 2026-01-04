@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import useErrorHandling from "../../../hooks/useErrorHandling";
-import { Box, Button, Flex, Grid, GridItem, Heading, Stack, Switch, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, GridItem, Heading, IconButton, Stack, Switch, Text, Tooltip, useDisclosure, useToast } from "@chakra-ui/react";
 import { Log } from "../../../models/Log";
-import { formatDate, newApiRequest } from "../../../utils/clientUtils";
+import { formatDate, newApiRequest, newLocalApiRequest } from "../../../utils/clientUtils";
 import { Screen } from "../../../models/Screen";
 import { LogStatus } from "../../../models/enums/LogStatus";
 import { ScreenAction } from "../../../models/enums/ScreenAction";
 import { FiDelete, FiDownload, FiInfo } from "react-icons/fi";
-import { ExitToAppOutlined } from "@mui/icons-material";
+import { ExitToAppOutlined, Refresh } from "@mui/icons-material";
 import { SetMessageModal } from "../../SetMessageModal";
 import Card from "../../ui/Card";
+import { useRouter } from "next/router";
 
 interface InfoProps {
     session: any;
@@ -30,6 +31,8 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
     const [deviceManufacturer, setDeviceManufacturer] = useState("");
 
     const { handleApiError } = useErrorHandling();
+    const router = useRouter();
+    const toast = useToast();
 
     useEffect(() => {
         const id = setInterval(() => {
@@ -74,6 +77,23 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
         }
     }
 
+    async function refreshCode() {
+        try {
+            const response = await newLocalApiRequest("POST", `/actions/refresh-code`, {
+                screenId: screen.id
+            });
+
+            if (await handleApiError(response)) {
+                router.reload();
+            } else {
+                toast({ title: "Failed to refresh code", status: "error" });
+            }
+        } catch (e: any) {
+            toast({ title: "Failed to refresh code", status: "error" });
+            console.error(e);
+        }
+    }
+
     function getLogColor(log: Log) {
         if (log.status === LogStatus.INFO) {
             return "gray";
@@ -112,7 +132,18 @@ export default function InformationTabPanel({ screen, sendAction, session, devic
             >
                 <GridItem>
                     <Card padding="5">
-                        <Heading size="xs" marginBottom="2">Connect</Heading>
+                        <Flex justifyContent="space-between">
+                            <Heading size="xs" marginBottom="2">Connect</Heading>
+                            
+                            <Tooltip label="Refresh code">
+                                <IconButton
+                                    icon={<Refresh />}
+                                    variant="unstyled"
+                                    aria-label="Refresh unique code"
+                                    onClick={() => refreshCode()}
+                                />
+                            </Tooltip>
+                        </Flex>
                         <Text>Enter this code on the setup screen in the app.</Text>
 
                         <Box

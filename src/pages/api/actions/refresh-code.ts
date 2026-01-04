@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { pool } from "../../../database";
 import { authOptions } from "../auth/[...nextauth]";
+import { generateRandomChars } from "../../../utils/clientUtils";
 
 export default async function handler(req: any, res: any) {
     try {
@@ -9,12 +10,12 @@ export default async function handler(req: any, res: any) {
         if (!session) {
             return res.status(401).end();
         }
-
+        
         const screenId = req.body.screenId;
-        const activeVideoId = req.body.activeVideoId;
+        const code = generateRandomChars(4);
 
-        await pool.execute("UPDATE screens SET activeVideoId = ? WHERE id = ?", [
-            activeVideoId,
+        await pool.execute("UPDATE screens SET uniqueCode = ? WHERE id = ?", [
+            code,
             screenId
         ]);
 
