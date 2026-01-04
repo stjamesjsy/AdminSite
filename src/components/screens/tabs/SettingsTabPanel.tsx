@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Grid, GridItem, Heading, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Heading, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
 import { Add } from "@mui/icons-material";
 import { useState } from "react";
 import useErrorHandling from "../../../hooks/useErrorHandling";
@@ -6,6 +6,7 @@ import { Screen } from "../../../models/Screen";
 import { SelectVideoDrawer } from "../../videos/SelectVideoDrawer";
 import { GeneralSettings } from "../views/general";
 import { VideoSettings } from "../views/videos";
+import Card from "../../ui/Card";
 
 interface ScreenInfoProps {
     session: any;

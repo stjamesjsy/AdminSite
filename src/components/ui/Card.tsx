@@ -5,14 +5,15 @@ interface CardProps {
     className?: string;
 }
 
-export const Card = (props: PropsWithChildren<CardProps & BoxProps>) => {
+export function Card(props: PropsWithChildren<CardProps & BoxProps>) {
     return (
         <Box
             position="relative"
-            backgroundColor={useColorModeValue("white", "rgb(53, 56, 64)")}
+            bgColor="white"
             border="1px solid #e8e9ec"
             borderRadius="8px"
             {...props}
+            boxShadow="none"
         >
             <div>
                 {props.children}

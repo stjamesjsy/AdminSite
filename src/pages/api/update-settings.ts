@@ -1,4 +1,4 @@
-import database from "../../database";
+import { pool } from "../../database";
 
 export default async function handler(req: any, res: any) {
     try {
@@ -6,7 +6,7 @@ export default async function handler(req: any, res: any) {
         const videoData = req.body.videos as any;
         const screenId = req.body.screenId;
 
-        await database.execute("UPDATE screens SET isControlsShown = ?, isTimeShown = ?, activeVideoId = ? WHERE id = ?", [
+        await pool.execute("UPDATE screens SET isControlsShown = ?, isTimeShown = ?, activeVideoId = ? WHERE id = ?", [
             videoData.isControlsShown,
             videoData.isTimeShown,
             videoData.activeVideoId,

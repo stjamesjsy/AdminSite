@@ -12,6 +12,7 @@ class MyApp extends App {
 
         if (typeof window !== "undefined") {
             // This is used to keep track of websocket responses from the client
+            // TODO: Unused, remove?
             const adminSessionId = sessionStorage.getItem("adminSessionId");
 
             if (adminSessionId === undefined || adminSessionId === null) {

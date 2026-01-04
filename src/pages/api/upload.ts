@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { withFileUpload } from "next-multiparty";
-import googleCloudServer from "../../utils/googleCloudServer";
 import { CDN_URL } from "../../utils/constants";
+import { uploadFileServer } from "../../utils/googleCloudServer";
 
 type CustomApiRequest = NextApiRequest & {
     fields: any;
@@ -17,12 +17,12 @@ export default withFileUpload(async function handler(req: CustomApiRequest, res:
         try {
             const fileName = req.fields.fileName;
             const filePath = req.fields.image ? req.fields.filePath : req.file.filepath;
-            const uploadResult = await googleCloudServer.uploadFile(fileName, filePath);
+            const uploadedFileName = await uploadFileServer(fileName, filePath);
 
-            console.log("File uploaded: " + uploadResult[0].name);
+            console.log("File uploaded: " + uploadedFileName);
 
             return res.json({
-                url: `${CDN_URL}/${uploadResult[0].name}`
+                url: `${CDN_URL}/${uploadedFileName}`
             })
         } catch (e: any) {
             throw e;

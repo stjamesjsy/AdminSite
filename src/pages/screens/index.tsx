@@ -12,6 +12,7 @@ import { UserRole } from "../../models/enums/UserRole";
 import { formatTimeSince, newApiRequest } from "../../utils/clientUtils";
 import { checkAuthenticated, getApiKey, processServerError } from "../../utils/serverUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
+import NextLink from "next/link";
 
 interface Props {
     session: any;
@@ -104,6 +105,7 @@ export default function Screens(props: Props) {
                         href={`/screens/${screen.id}`} 
                         _hover={{ textDecoration: "none" }}
                         width={{ base: "100%", md: "fit-content" }}
+                        as={NextLink}
                     >
                         <Card
                             paddingX="4"

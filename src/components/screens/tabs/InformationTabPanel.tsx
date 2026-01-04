@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useErrorHandling from "../../../hooks/useErrorHandling";
-import { Box, Button, Card, Flex, Grid, GridItem, Heading, Stack, Switch, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, GridItem, Heading, Stack, Switch, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { Log } from "../../../models/Log";
 import { formatDate, newApiRequest } from "../../../utils/clientUtils";
 import { Screen } from "../../../models/Screen";
@@ -9,6 +9,7 @@ import { ScreenAction } from "../../../models/enums/ScreenAction";
 import { FiDelete, FiDownload, FiInfo } from "react-icons/fi";
 import { ExitToAppOutlined } from "@mui/icons-material";
 import { SetMessageModal } from "../../SetMessageModal";
+import Card from "../../ui/Card";
 
 interface InfoProps {
     session: any;

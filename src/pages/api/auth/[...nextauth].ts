@@ -1,8 +1,9 @@
 import { compare } from "bcrypt";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import database from "../../../database";
+import { pool } from "../../../database";
 import { UserRole } from "../../../models/enums/UserRole";
+import { RowDataPacket } from "mysql2";
 
 interface ICredentials {
     email: string;
@@ -28,7 +29,7 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials: any, req: any): Promise<any> {
                 try {
-                    const user = await database.execute("SELECT * FROM users WHERE username = ?", [credentials.username]);
+                    const [user] = await pool.execute<RowDataPacket[]>("SELECT * FROM users WHERE username = ?", [credentials.username]);
 
                     if (user.length === 0) {
                         throw new Error("User doesn't exist");
@@ -51,9 +52,9 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async session({ session, token }: any) {
-            const user = await database.execute("SELECT * FROM users WHERE username = ?", [token?.user?.username]);
+            const [user] = await pool.execute<RowDataPacket[]>("SELECT * FROM users WHERE username = ?", [token?.user?.username]);
 
-            if (user) {
+            if (user.length !== 0) {
                 session.user = user[0];
                 session.user.password = undefined;
                 return session;
@@ -74,7 +75,7 @@ export const authOptions: NextAuthOptions = {
         async signOut({ token }: any) {
 
         },
-        async linkAccount({ user, account, profile }: any ) {
+        async linkAccount({ user, account, profile }: any) {
             console.log("Link account")
         }
     },

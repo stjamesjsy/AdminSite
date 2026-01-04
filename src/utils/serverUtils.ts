@@ -3,14 +3,9 @@ import { ADMIN_API_KEY, API_KEY } from "./constants";
 import { AppError } from "./exceptions/AppError";
 
 /**
- * Processes an error that has occurred on the server.
- *
- * When an error is received, this function is called to display the error
- * in a readable format both to the browser and to the console.
- *
- * @param error The error object itself
+ * Processes a server-side error and prepares props for the client.
  */
-export const processServerError = (error: Error | AppError | any, session: any) => {
+export function processServerError(error: Error | AppError | any, session: any) {
     const errorMessage = error instanceof Error ? error.message : error;
     const errorObject = error instanceof AppError ? error : new AppError({
         httpCode: 500,
@@ -27,20 +22,25 @@ export const processServerError = (error: Error | AppError | any, session: any) 
     }
 }
 
-export const checkAuthenticated = (session: any, role: UserRole) => {
+/**
+ * Ensures the user is authenticated and has sufficient permissions.
+ */
+export function checkAuthenticated(session: any, role: UserRole) {
     if (!session) {
         return {
             redirect: { destination: "/login", permanent: false }
-        } 
+        }
     }
-
     if (!session?.user?.isSuperAdmin && checkUserRoleLower(session?.user?.role, role)) {
         throw new Error("You do not have permission to view this page");
     }
     return true;
 }
 
-export const getApiKey = (session: any) => {
+/**
+ * Returns the appropriate API key for the current session.
+ */
+export function getApiKey(session: any) {
     if (!session || session?.user?.role === UserRole.NONE) {
         return null;
     }
