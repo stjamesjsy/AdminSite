@@ -9,7 +9,7 @@ import { ErrorView } from "../../../components/ui/ErrorView";
 import { LoadingView } from "../../../components/ui/LoadingView";
 import { Page } from "../../../components/ui/Page";
 import InformationTabPanel from "../../../components/screens/tabs/InformationTabPanel";
-import SettingsTabPanel from "../../../components/screens/tabs/SettingsTabPanel";
+import VideosTabPanel from "../../../components/screens/tabs/VideoTabsPanel";
 import { Tab } from "../../../components/ui/Tab";
 import useErrorHandling from "../../../hooks/useErrorHandling";
 import { DeviceType, formatDeviceType } from "../../../models/enums/DeviceType";
@@ -17,7 +17,7 @@ import { ScreenAction } from "../../../models/enums/ScreenAction";
 import { UserRole } from "../../../models/enums/UserRole";
 import { Screen } from "../../../models/Screen";
 import { Video } from "../../../models/Video";
-import { newApiRequest } from "../../../utils/clientUtils";
+import { formatTimeSince, newApiRequest } from "../../../utils/clientUtils";
 import { AppError } from "../../../utils/exceptions/AppError";
 import { checkAuthenticated, getApiKey, processServerError } from "../../../utils/serverUtils";
 import { authOptions } from "../../api/auth/[...nextauth]";
@@ -57,6 +57,7 @@ export default function ScreenInfo(props: Props) {
     const [videos, setVideos] = useState<Video[]>([]);
     const [error, setError] = useState(props.error);
     const [lastUpdated, setLastUpdated] = useState("");
+    const [deviceUptime, setDeviceUptime] = useState("");
     const [connected, setConnected] = useState(false);
 
     const toast = useToast();
@@ -126,9 +127,11 @@ export default function ScreenInfo(props: Props) {
 
             if (await handleApiError(response)) {
                 const data = await response.json();
-                const moreThan30SecsAgo = (Date.now() - new Date(data?.lastUpdated).getTime()) > 10 * 1000;
+                const moreThan30SecsAgo = (Date.now() - new Date(Number(data?.lastUpdated)).getTime()) > 10 * 1000;
 
                 setConnected(!moreThan30SecsAgo);
+                setLastUpdated(formatTimeSince(data?.lastUpdated));
+                setDeviceUptime(data?.uptime);
             } else {
                 setConnected(false);
             }
@@ -243,7 +246,7 @@ export default function ScreenInfo(props: Props) {
                         marginRight="8"
                     />
                     <Tab
-                        text="Settings"
+                        text="Videos"
                         marginRight="8"
                     />
                 </TabList>
@@ -253,10 +256,12 @@ export default function ScreenInfo(props: Props) {
                             screen={screen}
                             session={props.session}
                             sendAction={sendAction}
+                            deviceUptime={deviceUptime}
+                            connected={connected}
                         />
                     </TabPanel>
                     <TabPanel paddingX="0">
-                        <SettingsTabPanel
+                        <VideosTabPanel
                             screen={screen}
                             videos={videos}
                             session={props.session}

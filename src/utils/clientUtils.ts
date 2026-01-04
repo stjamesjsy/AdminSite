@@ -8,7 +8,7 @@ async function _apiRequest(url: string, method: string, route: string, data?: an
         method: method,
         headers: {
             "Content-Type": "application/json",
-            "X-Api-Key": apiKey
+            "X-Access-Token": apiKey
         }
     }
 

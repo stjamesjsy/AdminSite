@@ -63,6 +63,20 @@ export function EditUserDrawer({ isOpen, onClose, onSuccess, session, user }: Pr
         }
     }
 
+     async function sendTokenRegenRequest() {
+        try {
+            const response = await newApiRequest("POST", `/users/${user?.id}/regen-token`);
+
+            if (await handleApiError(response)) {
+                onSuccess();
+                onClose();
+                toast({ title: "Token regenerated", status: "success", duration: 2000 });
+            }
+        } catch (e: any) {
+            toast({ title: e.message, status: "error", duration: 2000 });
+        }
+    }
+
     function isComplete() {
         return name !== "" && username !== "";
     }
@@ -158,6 +172,13 @@ export function EditUserDrawer({ isOpen, onClose, onSuccess, session, user }: Pr
                     isDisabled={session?.user?.id === user?.id}
                 >
                     Delete
+                </Button>
+                <Button
+                    onClick={sendTokenRegenRequest}
+                    height="8"
+                    marginRight="2"
+                >
+                    Regen Token
                 </Button>
                 <Button
                     colorScheme="purple"

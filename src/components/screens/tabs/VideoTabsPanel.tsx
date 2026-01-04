@@ -14,7 +14,7 @@ interface ScreenInfoProps {
     videos: any[];
 }
 
-export default function SettingsTabPanel({ screen, videos, fetchVideos, fetchScreen, sendAction, session }: ScreenInfoProps & { fetchVideos: () => void; fetchScreen: any; sendAction: any }) {
+export default function VideosTabPanel({ screen, videos, fetchVideos, fetchScreen, sendAction, session }: ScreenInfoProps & { fetchVideos: () => void; fetchScreen: any; sendAction: any }) {
     const [generalSettings, setGeneralSettings] = useState<any>();
     const [videoSettings, setVideoSettings] = useState<any>();
 
@@ -39,19 +39,21 @@ export default function SettingsTabPanel({ screen, videos, fetchVideos, fetchScr
         <Box>
             <Grid
                 gap="4"
-                gridTemplateColumns={{ base: "1fr", md: "42% 1fr" }}
-                gridTemplateAreas={{ base: `'general' 'videos' 'messages'`, md: `'general videos' 'messages videos'` }}
+                // gridTemplateColumns={{ base: "1fr", md: "42% 1fr" }}
+                // gridTemplateAreas={{ base: `'general' 'videos' 'messages'`, md: `'general videos' 'messages videos'` }}
+                gridTemplateColumns="1fr"
+                gridTemplateAreas="'videos'"
                 alignItems="start"
             >
                 <GridItem gridArea="general">
-                    <Card padding="5" marginBottom="4">
+                    {/* <Card padding="5" marginBottom="4">
                         <Heading size="xs" marginBottom="4">Video Type</Heading>
 
                         <GeneralSettings
                             screen={screen}
                             onChange={(s: any) => setGeneralSettings(s)}
                         />
-                    </Card>
+                    </Card> */}
                     {/* 
                     <Card padding="5">
                         <Heading size="xs" marginBottom="4">Messages</Heading>

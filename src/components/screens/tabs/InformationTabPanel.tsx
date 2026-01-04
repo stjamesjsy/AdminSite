@@ -15,14 +15,20 @@ interface InfoProps {
     session: any;
     screen: Screen;
     sendAction: any;
+    deviceUptime: string;
+    connected?: boolean;
 }
 
-export default function InformationTabPanel({ screen, sendAction, session }: InfoProps) {
+export default function InformationTabPanel({ screen, sendAction, session, deviceUptime, connected }: InfoProps) {
     const { isOpen: isSetMessageModalOpen, onClose: onSetMessageModalClose, onOpen: onSetMessageModalOpen } = useDisclosure();
 
     const [logs, setLogs] = useState<Log[]>([]);
     const [logsError, setLogsError] = useState("");
     const [showDebug, setShowDebug] = useState(false);
+    const [deviceIp, setDeviceIp] = useState("");
+    const [deviceBrand, setDeviceBrand] = useState("");
+    const [deviceManufacturer, setDeviceManufacturer] = useState("");
+
     const { handleApiError } = useErrorHandling();
 
     useEffect(() => {
@@ -31,8 +37,26 @@ export default function InformationTabPanel({ screen, sendAction, session }: Inf
                 fetchLogs();
             }
         }, 1000);
+        fetchDeviceInfo();
         return () => clearInterval(id);
     }, []);
+
+    async function fetchDeviceInfo() {
+        try {
+            const response = await newApiRequest("GET", `/screens/${screen?.id}/device-info`);
+
+            if (await handleApiError(response)) {
+                const data = await response.json();
+                setDeviceIp(data?.ipAddress);
+                setDeviceBrand(data?.brand);
+                setDeviceManufacturer(data?.manufacturer);
+            } else {
+                // todo error
+            }
+        } catch (e: any) {
+            // todo error
+        }
+    }
 
     async function fetchLogs() {
         try {
@@ -104,42 +128,69 @@ export default function InformationTabPanel({ screen, sendAction, session }: Inf
 
                 <GridItem>
                     <Card padding="5">
-                        <Heading size="xs" marginBottom="3">Actions</Heading>
+                        <Heading size="xs" marginBottom="3">Device Info</Heading>
 
                         <Flex
-                            gap="2"
+                            columnGap="10"
+                            rowGap="3"
                             flexWrap="wrap"
                         >
-                            <Action
-                                text="Fetch Videos"
-                                onClick={() => sendAction(ScreenAction.FETCH_VIDEOS)}
-                                icon={<FiDownload />}
-                                summary="Downloads videos onto the device"
-                            />
-                            <Action
-                                text="Send Test Toast"
-                                onClick={() => sendAction(ScreenAction.TOAST, { text: "This is a test message" })}
-                                icon={<FiInfo />}
-                            />
-                            <Action
-                                text="Set Message"
-                                onClick={onSetMessageModalOpen}
-                                icon={<FiInfo />}
-                            />
-                            <Action
-                                text="Clear Message"
-                                onClick={() => sendAction(ScreenAction.CLEAR_MESSAGE)}
-                                icon={<FiDelete />}
-                            />
-                            <Action
-                                text="Kill App"
-                                onClick={() => sendAction(ScreenAction.KILL_APP)}
-                                icon={<ExitToAppOutlined />}
-                            />
+                            <Box>
+                                <Text fontWeight="bold" fontSize="14">IP Address</Text>
+                                <Text>{deviceIp}</Text>
+                            </Box>
+                            <Box>
+                                <Text fontWeight="bold" fontSize="14">Brand</Text>
+                                <Text>{deviceBrand}</Text>
+                            </Box>
+                            <Box>
+                                <Text fontWeight="bold" fontSize="14">Manufacturer</Text>
+                                <Text>{deviceManufacturer}</Text>
+                            </Box>
+                            <Box>
+                                <Text fontWeight="bold" fontSize="14">Uptime</Text>
+                                <Text>{connected ? deviceUptime : "-"}</Text>
+                            </Box>
                         </Flex>
                     </Card>
                 </GridItem>
             </Grid>
+
+            <Card padding="5">
+                <Heading size="xs" marginBottom="3">Actions</Heading>
+
+                <Flex
+                    gap="2"
+                    flexWrap="wrap"
+                >
+                    <Action
+                        text="Fetch Videos"
+                        onClick={() => sendAction(ScreenAction.FETCH_VIDEOS)}
+                        icon={<FiDownload />}
+                        summary="Downloads videos onto the device"
+                    />
+                    <Action
+                        text="Send Test Toast"
+                        onClick={() => sendAction(ScreenAction.TOAST, { text: "This is a test message" })}
+                        icon={<FiInfo />}
+                    />
+                    <Action
+                        text="Set Message"
+                        onClick={onSetMessageModalOpen}
+                        icon={<FiInfo />}
+                    />
+                    <Action
+                        text="Clear Message"
+                        onClick={() => sendAction(ScreenAction.CLEAR_MESSAGE)}
+                        icon={<FiDelete />}
+                    />
+                    <Action
+                        text="Kill App"
+                        onClick={() => sendAction(ScreenAction.KILL_APP)}
+                        icon={<ExitToAppOutlined />}
+                    />
+                </Flex>
+            </Card>
 
             <Card padding="5">
                 <Flex justifyContent="space-between">

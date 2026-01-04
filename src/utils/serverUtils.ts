@@ -1,5 +1,5 @@
+import { pool } from "../database";
 import { checkUserRoleLower, UserRole } from "../models/enums/UserRole";
-import { ADMIN_API_KEY, API_KEY } from "./constants";
 import { AppError } from "./exceptions/AppError";
 
 /**
@@ -41,11 +41,6 @@ export function checkAuthenticated(session: any, role: UserRole) {
  * Returns the appropriate API key for the current session.
  */
 export function getApiKey(session: any) {
-    if (!session || session?.user?.role === UserRole.NONE) {
-        return null;
-    }
-    if (session?.user?.role === UserRole.ADMIN || session?.user?.isSuperAdmin) {
-        return ADMIN_API_KEY;
-    }
-    return API_KEY;
+    // TODO: Remove this method as it's no longer needed
+    return session?.user?.accessToken;
 }
