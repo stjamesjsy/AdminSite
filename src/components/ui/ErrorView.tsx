@@ -10,7 +10,7 @@ interface Props {
 
 export function ErrorView({ error, session }: Props) {
     return (
-        <Page title="Error" session={session}>
+        <Page title="Error">
             <Center>
                 <Card padding="14" textAlign="center">
                     <Stack spacing="2">
