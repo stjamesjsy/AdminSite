@@ -87,7 +87,7 @@ export default function Screens(props: Props) {
     }
 
     return (
-        <Page title="Screens" session={props.session}>
+        <Page title="Screens">
             <Heading size="sm">Screens</Heading>
 
             <Button

@@ -173,7 +173,7 @@ export default function ScreenInfo(props: Props) {
     }
 
     return (
-        <Page title={screen?.name ?? ""} session={props.session}>
+        <Page title={screen?.name ?? ""}>
             <Flex
                 justifyContent="space-between"
                 flexWrap="wrap"

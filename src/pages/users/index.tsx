@@ -80,7 +80,7 @@ export default function Users(props: Props) {
     }
 
     return (
-        <Page title="Users" session={props.session}>
+        <Page title="Users">
             <Heading size="sm">Users</Heading>
 
             <Button

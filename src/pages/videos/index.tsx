@@ -106,7 +106,7 @@ export default function Videos(props: Props) {
     }
 
     return (
-        <Page title="Videos" session={props.session}>
+        <Page title="Videos">
             <Heading size="sm">Videos</Heading>
             <Text>All videos across all screens.</Text>
 
